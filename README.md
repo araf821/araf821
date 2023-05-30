@@ -8,11 +8,7 @@
 #
 
   <p>
-    <a href="https://readme-typing-svg.demolab.com"
-      ><img
-        src="https://readme-typing-svg.demolab.com?font=Ubuntu&weight=700&size=28&width=800&duration=555&pause=1111&color=eee&width=435&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer"
-        alt="Typing SVG"
-    /></a>
+    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Russo+One&size=28&duration=750&pause=1000&color=F30043&background=FF46D600&vCenter=true&width=600&height=40&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer" alt="Typing SVG" /></a>
   </p>
 
   <p style="padding-top:-10px;">
