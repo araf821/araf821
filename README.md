@@ -1,17 +1,17 @@
 <div>
   <p align="center">
     <a href="https://github.com/araf821">
-      <img width="400px" src="images/name.svg" alt="github user's name"
+      <img width="400px" src="images/name2.svg" alt="github user's name"
     /></a>
   </p>
 
 #
 
   <p>
-    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Russo+One&size=28&duration=750&pause=1000&color=F30043&background=FF46D600&vCenter=true&width=600&height=40&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer" alt="Typing SVG" /></a>
+    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Russo+One&size=28&duration=750&pause=1000&color=F30043&background=FF46D600&vCenter=true&width=600&height=28&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer" alt="Typing SVG" /></a>
   </p>
 
-  <p style="padding-top:-10px;">
+  <p>
     Hello! I'm a computer science student who's highly passionate about coding.
     Side projects are my thing—I love diving into new ideas and turning them
     into reality. Join me on this exciting journey as I work towards becoming
@@ -20,7 +20,7 @@
 
   ---
 
-  <h1 >My Tech Stack</h1>
+  <h1>My Tech Stack</h1>
   <div>
     <!------------ Languages ----------------->
     <p >
@@ -49,7 +49,7 @@
     <!---------------------- Development Tools ---------------------->
     <p >
       <a href="https://skillicons.dev">
-        <img src="https://skillicons.dev/icons?i=linux,vscode,figma,androidstudio,idea,unreal" />
+        <img src="https://skillicons.dev/icons?i=linux,vscode,git,figma,androidstudio,idea,unreal" />
       </a>
     </p>
   </div>
