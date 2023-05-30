@@ -1,25 +1,13 @@
-<div
-  style="
-    background-color: rgb(24 32 27);
-    padding: 1rem;
-    color: white;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-      sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 20px;
-  "
->
+<div>
   <p align="center">
     <a href="https://github.com/araf821">
       <img width="400px" src="images/name.svg" alt="github user's name"
     /></a>
   </p>
 
-  <div style="height: 2px; background: #555; width: 100%"></div>
+#
 
-  <p style="margin: 7px 0 -12px">
+  <p>
     <a href="https://readme-typing-svg.demolab.com"
       ><img
         src="https://readme-typing-svg.demolab.com?font=Ubuntu&weight=700&size=28&width=800&duration=555&pause=1111&color=eee&width=435&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer"
@@ -27,83 +15,87 @@
     /></a>
   </p>
 
-  <h4 style="max-width: 800px; text-align: justify">
+  <h3 style="padding-top:-10px;">
     Hello! I'm a computer science student who's highly passionate about coding.
     Side projects are my thing—I love diving into new ideas and turning them
     into reality. Join me on this exciting journey as I work towards becoming
     the world's best developer.
-  </h4>
+  </h3>
 
-  <div style="height: 2px; background: #333; width: 100%"></div>
+  #
 
-  <h1 align="center" style="margin-top: 12px;">My Tech Stack</h1>
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      margin: 8px auto;
-      align-items: center;
-    "
-  >
+  <h1 align="center">My Tech Stack</h1>
+  <div>
     <!-- Languages -->
-    <p style="display: flex; gap: 5px">
+    <p align="center">
       <img
         width="50px"
         src="https://www.svgrepo.com/show/452045/js.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/374146/typescript-official.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/452075/node-js.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="42px"
         src="https://www.svgrepo.com/show/374016/python.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="43px"
         src="https://www.svgrepo.com/show/452234/java.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="43px"
         src="https://www.svgrepo.com/show/452228/html-5.svg"
         alt="js"
+        style="padding-right:10px;"
       />
     </p>
     <!-- Styling -->
-    <p style="display: flex; gap: 5px">
+    <p align="center">
       <img
         width="50px"
         src="https://www.svgrepo.com/show/374118/tailwind.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://cdn.worldvectorlogo.com/logos/framer-motion.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://res.cloudinary.com/practicaldev/image/fetch/s--G_hIFTl9--/c_imagga_scale,f_auto,fl_progressive,h_1080,q_auto,w_1080/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/hkjwvp4agz9zd8jjcu6z.png"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/452185/css-3.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/354048/material-ui.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
@@ -112,106 +104,98 @@
       />
     </p>
     <!-- Frameworks -->
-    <p style="display: flex; gap: 5px">
+    <p align="center">
       <img
         width="50px"
         src="https://www.svgrepo.com/show/452092/react.svg"
         alt="js"
+        style="padding-right:10px;"
       /><img
-        width="42px"
-        src="https://www.svgrepo.com/show/378440/nextjs-fill.svg"
-        style="background-color: white; border-radius: 20%; padding: 3px"
+        height="50px"
+        src="https://d2nir1j4sou8ez.cloudfront.net/wp-content/uploads/2021/12/nextjs-boilerplate-logo.png"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="42px"
         src="https://www.svgrepo.com/show/330398/express.svg"
-        style="background-color: white; border-radius: 20%; padding: 3px"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="42px"
         src="https://www.svgrepo.com/show/508915/flask.svg"
-        style="background-color: white; border-radius: 20%; padding: 3px"
         alt="js"
       />
     </p>
-    <p style="display: flex; gap: 5px">
+    <p align="center">
       <img
         width="50px"
         src="https://camo.githubusercontent.com/74ed64243ba05754329bc527cd4240ebd1c087a1/68747470733a2f2f73656c656e69756d2e6465762f696d616765732f73656c656e69756d5f6c6f676f5f7371756172655f677265656e2e706e67"
-        style="border-radius: 20%"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://assets.perimeterx.com/image/upload/dpr_auto,f_auto,w_1200/blog/2017/step-by-step-guide-setting-up-appium/appium-logo_xn7bct"
-        style="border-radius: 20%; object-fit: cover"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://www.cyberark.com/wp-content/uploads/2019/01/jenkins-e1537966865729.png"
-        style="border-radius: 20%; object-fit: cover"
         alt="js"
       />
     </p>
     <!-- Database & Deployment -->
-    <p style="display: flex; gap: 5px">
+    <p align="center">
       <img
         width="50px"
         src="https://www.svgrepo.com/show/439231/mongodb.svg"
         alt="js"
+        style="padding-right:10px;"
       /><img
         width="50px"
         src="https://www.svgrepo.com/show/354200/postgresql.svg"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
-        width="42px"
-        src="https://www.svgrepo.com/show/354210/prisma.svg"
-        style="background-color: white; border-radius: 20%; padding: 3px"
+        width="50px"
+        src="https://avatars.githubusercontent.com/u/17219288?s=280&v=4"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
-        width="42px"
-        src="https://seeklogo.com/images/P/planetscale-logo-0EEA8CAEB4-seeklogo.com.png"
-        style="background-color: white; border-radius: 20%; padding: 3px"
+        width="50px"
+        src="https://avatars.githubusercontent.com/u/35612527?s=280&v=4"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
-        width="42px"
-        src="https://images.ctfassets.net/c63hsprlvlya/7otp3Ofpdr8sCedYnSewGn/78c4e3894ec6d5a05aafd14bae5275c7/logo-vercel-svgrepo-com.svg"
-        style="background-color: white; border-radius: 20%; padding: 3px"
+        width="50px"
+        src="https://images.prismic.io/contrary-research/0f4e0201-e82a-4356-b167-ee0610ec7ad0_Vercel.jpeg?auto=compress,format"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://jeancochrane.com/static/images/blog/netlify-identity-dealbreakers/netlify-logo.png"
         alt="js"
+        style="padding-right:10px;"
       />
       <img
         width="50px"
         src="https://pbs.twimg.com/profile_images/689189555765784576/3wgIDj3j_400x400.png"
         alt="js"
-        style="border-radius: 20%; object-fit: cover"
       />
     </p>
-
   </div>
 
-  <div style="height: 2px; background: #333; width: 100%"></div>
+  #
 
-  <h1 align="center" style="margin: 12px auto">Github Stats and Activity</h1>
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 650px;
-      margin: 0 auto;
-    "
-  >
+  <h1 align="center">Github Stats and Activity</h1>
+  <div align="center">
     <img
       title="🔥 Get streak stats for your profile at git.io/streak-stats"
       alt="github streak"
@@ -227,23 +211,18 @@
     />
   </div>
 
+  #
+
   <!-- Socials -->
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      margin: 8px auto;
-      align-items: center;
-    "
-  >
+  <div>
     <h2 align="center">Connect with Me</h2>
-    <p align="center" style="display: flex; gap: 10px">
+    <p align="center">
       <a href="https://github.com/araf821">
         <img
           width="40px"
           src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-          style="border-radius: 20%"
           alt="linkedin logo"
+          style="padding-right:10px;"
         />
       </a>
       <a href="https://www.linkedin.com/in/araf821/">
@@ -251,6 +230,7 @@
           width="40px"
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/640px-LinkedIn_logo_initials.png"
           alt="linkedin logo"
+          style="padding-right:10px;"
         />
       </a>
       <a href="https://www.instagram.com/triple._.a/">
