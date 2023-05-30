@@ -15,12 +15,12 @@
     /></a>
   </p>
 
-  <h3 style="padding-top:-10px;">
+  <p style="padding-top:-10px;">
     Hello! I'm a computer science student who's highly passionate about coding.
     Side projects are my thing—I love diving into new ideas and turning them
     into reality. Join me on this exciting journey as I work towards becoming
     the world's best developer.
-  </h3>
+  </p>
 
   #
 
@@ -32,31 +32,31 @@
         width="50px"
         src="https://www.svgrepo.com/show/452045/js.svg"
         alt="js"
-        style="padding-right:10px;"
+        style="padding-right:25px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/374146/typescript-official.svg"
         alt="js"
-        style="padding-right:10px;"
+        style="padding-right:25px;"
       />
       <img
         width="50px"
         src="https://www.svgrepo.com/show/452075/node-js.svg"
         alt="js"
-        style="padding-right:10px;"
+        style="padding-right:25px;"
       />
       <img
         width="42px"
         src="https://www.svgrepo.com/show/374016/python.svg"
         alt="js"
-        style="padding-right:10px;"
+        style="padding-right:25px;"
       />
       <img
         width="43px"
         src="https://www.svgrepo.com/show/452234/java.svg"
         alt="js"
-        style="padding-right:10px;"
+        style="padding-right:25px;"
       />
       <img
         width="43px"
