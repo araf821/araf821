@@ -22,8 +22,6 @@
 
   ## My Tech Stack
 
-#
-
   <div>
     <!------------ Languages ----------------->
     <p >
@@ -60,8 +58,6 @@
 #
 
   ## Github Stats
-
-#
 
   <div align="center">
     <img
