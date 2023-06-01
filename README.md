@@ -1,14 +1,9 @@
 <div>
-  <!-- <p align="center">
-    <a href="https://github.com/araf821">
-      <img width="400px" src="images/name2.svg" alt="github user's name"
-    /></a>
-  </p> -->
-
+  
 # Araf A Alam
 
   <p>
-    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Russo+One&size=28&duration=750&pause=1000&color=F30043&background=FF46D600&vCenter=true&width=600&height=28&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer" alt="Typing SVG" /></a>
+    <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=Russo+One&size=28&duration=750&pause=1000&color=F30043&background=FF46D600&vCenter=true&width=600&height=40&lines=Lifelong+Learner;Aspiring+Software+Engineer;Aspiring UX/UI Designer" alt="Typing SVG" /></a>
   </p>
 
   <p>
