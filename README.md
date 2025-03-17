@@ -98,3 +98,5 @@ I aspire to become a **1000x developer**, bringing to life **anything you can im
 <!-- ![Araf's GitHub stats](https://github-readme-stats.vercel.app/api?username=araf821&show_icons=true&theme=react&hide_border=true&include_all_commits=true&count_private=true)
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=araf821&theme=react&hide_border=true&layout=compact&langs_count=8) -->
 ![GitHub Streak](https://streak-stats.demolab.com/?user=araf821&theme=react&hide_border=true)
+
+[](https://komarev.com/ghpvc/?username=araf821&style=pixel)
