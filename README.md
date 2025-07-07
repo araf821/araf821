@@ -7,12 +7,11 @@
 
 Based in **Toronto**, I am a **Computer Science Major** specializing in **Full-Stack Development**!  
 
-My journey is fueled by an **unmatched passion** for software and a love for programming. With a **GitHub streak** of over **700 days**, I'm constantly pushing myself to grow and learn.  
+I'm driven by my love for programming - the idea of building my imaginations to reality with code is something that keeps me up at night! With a **GitHub streak** of over **900 days**, I'm constantly pushing myself to grow and learn.
 
 I aspire to become a **1000x developer**, bringing to life **anything you can imagine**. Stay tuned for some **crazy stuff**! 
-
+<!-- 
 ## 𝗖𝘂𝗿𝗿𝗲𝗻𝘁𝗹𝘆 𝘄𝗼𝗿𝗸𝗶𝗻𝗴 𝗼𝗻
-
 
 [![Portfolio Website](https://img.shields.io/badge/-Portfolio%20Website-%231a1a1a?style=for-the-badge&logo=vercel&logoColor=white)]()
 > The coolest portfolio website you've ever seen. Coming soon!
@@ -27,7 +26,7 @@ I aspire to become a **1000x developer**, bringing to life **anything you can im
 > Leading and managing the development of a **hackathon platform** for Ctrl+Hack+Del, York University's largest hackathon. Built with **Next.js**, **TypeScript**, **AWS** and more. Designed for scalability for thousands of users.
 
 [![Full-Stack Social Media Platform](https://img.shields.io/badge/-Archive%20Our%20Youth-%231a1a1a?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://archiveouryouth.ca)
-> Maintaining and expanding the **full-stack platform** for youth to share their experiences. Built with **Next.js**, **TypeScript**, **Ckerk**, **Uploadthing**, MongoDB and more. Designed and developed from the ground up for the youth research organization-Young Lives Research Lab.
+> Maintaining and expanding the **full-stack platform** for youth to share their experiences. Built with **Next.js**, **TypeScript**, **Ckerk**, **Uploadthing**, MongoDB and more. Designed and developed from the ground up for the youth research organization-Young Lives Research Lab. -->
 
 ## 𝗠𝘆 𝗧𝗲𝗰𝗸 𝗦𝘁𝗮𝗰𝗸
 
