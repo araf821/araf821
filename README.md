@@ -7,7 +7,7 @@
 
 Based in **Toronto**, I am a **Computer Science Major** specializing in **Full-Stack Development**!  
 
-I'm driven by my love for programming - the idea of building my imaginations to reality with code is something that keeps me up at night! With a **GitHub streak** of over **900 days**, I'm constantly pushing myself to grow and learn.
+I'm driven by my love for programming - the idea of building my imaginations to reality with code is something that keeps me up at night! With a **GitHub streak** of over **1000 days**, I'm constantly pushing myself to grow and learn.
 
 I aspire to become a **1000x developer**, bringing to life **anything you can imagine**. Stay tuned for some **crazy stuff**! 
 <!-- 
