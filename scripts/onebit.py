@@ -43,7 +43,7 @@ FONT = {
     ",": "..|..|..|..|.#|.#|#.", ".": ".|.|.|.|.|.|#", ":": ".|.|#|.|.|#|.", "-": "....|....|....|####|....|....|....",
     "/": "....#|....#|...#.|..#..|.#...|#....|#....", "~": ".....|.....|.#..#|#.##.|.....|.....|.....",
     "'": "#|#|.|.|.|.|.", "(": "..#|.#.|#..|#..|#..|.#.|..#", ")": "#..|.#.|..#|..#|..#|.#.|#..",
-    " ": "...|...|...|...|...|...|...", "#": ".#.#.|.#.#.|#####|.#.#.|#####|.#.#.|.#.#.",
+    " ": "...|...|...|...|...|...|...", "+": ".....|..#..|..#..|#####|..#..|..#..|.....", "#": ".#.#.|.#.#.|#####|.#.#.|#####|.#.#.|.#.#.",
 }
 FOLDER = ["..#####.........", ".#.....#........", "################", "#..............#",
           "#..............#", "#..............#", "#..............#", "#..............#",
@@ -118,6 +118,33 @@ def text(t, x, y, s=1, anchor="start"):
     return "".join(d)
 
 
+def odometer(value, x, y, s, fill, key, delay=0.2):
+    """Pixel digits that roll from 0 to their value, each column clipped to one glyph like a counter wheel."""
+    svg, css, defs = [], [], []
+    chars = list(value)
+    pitch = 9 * s
+    for i, c in enumerate(chars):
+        cw = 5 if c.isdigit() else len(FONT[c].split("|")[0])
+        if c.isdigit():
+            target = int(c)
+            spins = 1 + (len(chars) - i) // 2
+            strip = list(range(10)) * spins + list(range(target + 1))
+            cid = f"od{key}{i}"
+            defs.append(f'<clipPath id="{cid}"><rect x="{x * PX:g}" y="{(y - 1) * PX:g}" width="{(cw * s + 1) * PX:g}" '
+                        f'height="{(7 * s + 2) * PX:g}"/></clipPath>')
+            paths = "".join(text(str(d), x + (5 - len(FONT[str(d)].split("|")[0])) // 2 * s, y + k * pitch, s)
+                            for k, d in enumerate(strip))
+            end = -(len(strip) - 1) * pitch * PX
+            svg.append(f'<g clip-path="url(#{cid})"><path class="fx {cid}" d="{paths}" fill="{fill}"/></g>')
+            css.append(f".{cid}{{transform:translate(0,{end:g}px);animation:{cid} {1.2 + .25 * (len(chars) - i):.2f}s "
+                       f"steps({len(strip) - 1},end) {delay:.2f}s both}}@keyframes {cid}{{from{{transform:none}}"
+                       f"to{{transform:translate(0,{end:g}px)}}}}")
+        else:
+            svg.append(f'<path d="{text(c, x, y, s)}" fill="{fill}"/>')
+        x += (cw + 1) * s
+    return "".join(svg), css, defs
+
+
 def rect(x, y, w, h):
     return f"M{x * PX:g},{y * PX:g}h{w * PX:g}v{h * PX:g}h-{w * PX:g}z"
 
@@ -144,7 +171,7 @@ def window(x, y, w, h, title, active):
     return "".join(out)
 
 
-def build(out, act="nap", palette="bit", scheme="forest"):
+def build(out, act="nap", palette="bit", scheme="forest", fx=()):
     t = tokens(THEMES)
     days = load_days()
     s = streaks(days)
@@ -189,7 +216,12 @@ def build(out, act="nap", palette="bit", scheme="forest"):
     # Window 1: the record (inactive, behind)
     wx, wy, ww, wh = 14, 22, 318, 148
     body.append(window(wx, wy, ww, wh, "THE RECORD", False))
-    body.append(f'<path d="{text(format(rec["length"], ","), wx + 14, wy + 24, 6)}" fill="{t["ink"]}"/>')
+    fx_css = []
+    if "odometer" in fx:
+        o_svg, o_css, o_defs = odometer(format(rec["length"], ","), wx + 14, wy + 24, 6, t["ink"], "r")
+        body.append(o_svg); fx_css += o_css; defs += o_defs
+    else:
+        body.append(f'<path d="{text(format(rec["length"], ","), wx + 14, wy + 24, 6)}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{text("DAY STREAK", wx + 15, wy + 76, 2)}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{text(fmt_date(rec["start"]) + " - " + fmt_date(rec["end"]), wx + 15, wy + 98)}" fill="{t["ink"]}"/>')
     # The streak split by calendar year: one block per year, sized by its days, labelled underneath
@@ -205,13 +237,20 @@ def build(out, act="nap", palette="bit", scheme="forest"):
         blocks.append(rect(x, gy, w, 7))
         body.append(f'<path d="{text(str(y), x + w // 2, gy + 11, 1, "middle")}" fill="{t["ink"]}"/>')
         x += w + 3
-    body.append(f'<path d="{"".join(blocks)}" fill="{t["bar"] if palette == "colour" else t["ink"]}"/>')
+    body.append(f'<path class="fx years" d="{"".join(blocks)}" fill="{t["bar"] if palette == "colour" else t["ink"]}"/>')
+    if "grow" in fx:
+        fx_css.append(".years{animation:years 1.4s steps(14,end) .3s both}"
+                      "@keyframes years{from{clip-path:inset(-10% 100% -10% 0)}to{clip-path:inset(-10% 0 -10% 0)}}")
 
     # Window 2: the last year (active, in front), monthly totals as one-bit bars
     rx, ry, rw, rh = 196, 140, 236, 122
     body.append('<g class="fx lastwin">')
     body.append(window(rx, ry, rw, rh, "LAST YEAR", True))
-    body.append(f'<path d="{text(format(ly["total"], ","), rx + 14, ry + 22, 4)}" fill="{t["ink"]}"/>')
+    if "odometer" in fx:
+        o_svg, o_css, o_defs = odometer(format(ly["total"], ","), rx + 14, ry + 22, 4, t["ink"], "y", .6)
+        body.append(o_svg); fx_css += o_css; defs += o_defs
+    else:
+        body.append(f'<path d="{text(format(ly["total"], ","), rx + 14, ry + 22, 4)}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{text("CONTRIBUTIONS IN THE LAST YEAR", rx + 15, ry + 56)}" fill="{t["ink"]}"/>')
     ys = dt.date.fromisoformat(ly["start"])
     months, (y, m) = [], (ys.year, ys.month)
@@ -225,9 +264,22 @@ def build(out, act="nap", palette="bit", scheme="forest"):
         h = max(1, round(bh * total / peak))
         bars.append(rect(bx0 + i * (bw + 3), by0 - h, bw, h))
     bar_fill = t["bar"] if palette == "colour" else "url(#dither)"
-    body.append(f'<path d="{"".join(bars[:-1])}" fill="{bar_fill}"/>'
-                f'<path d="{bars[-1]}" fill="{t["now"] if palette == "colour" else bar_fill}"/>'
-                f'<path d="{rect(bx0, by0, len(months) * (bw + 3) - 3, 1)}" fill="{t["ink"]}"/>')
+    for i, b in enumerate(bars):
+        fill = t["now"] if palette == "colour" and i == len(bars) - 1 else bar_fill
+        body.append(f'<path class="fx bar b{i}" d="{b}" fill="{fill}"/>')
+    if "grow" in fx:
+        fx_css.append(".bar{transform-box:fill-box;transform-origin:50% 100%;animation:grow .7s steps(6,end) both}"
+                      "@keyframes grow{from{transform:scaleY(0)}to{transform:none}}"
+                      + "".join(f".b{i}{{animation-delay:{.8 + i * .08:.2f}s}}" for i in range(len(bars))))
+    if "live" in fx:
+        lx = bx0 + (len(months) - 1) * (bw + 3)
+        ltop = by0 - max(1, round(bh * months[-1] / peak))
+        for k in range(3):
+            body.append(f'<path class="fx plus p{k}" d="{text("+1", lx + 1, ltop - 10)}" fill="{t["now"] if palette == "colour" else t["ink"]}"/>')
+        fx_css.append(f".plus{{opacity:0;animation:plus 2.7s steps(9,end) infinite}}.p1{{animation-delay:.9s}}.p2{{animation-delay:1.8s}}"
+                      f"@keyframes plus{{0%{{opacity:0;transform:none}}10%{{opacity:1}}75%{{opacity:1}}"
+                      f"100%{{opacity:0;transform:translate(0,-{14 * PX:g}px)}}}}")
+    body.append(f'<path d="{rect(bx0, by0, len(months) * (bw + 3) - 3, 1)}" fill="{t["ink"]}"/>')
     lh = max(1, round(bh * months[-1] / peak))
     body.append(f'<rect class="ants" x="{(bx0 + (len(months) - 1) * (bw + 3) - 1) * PX}" y="{(by0 - lh - 1) * PX}" '
                 f'width="{(bw + 2) * PX}" height="{(lh + 1) * PX}" fill="none" stroke="{t["ink"]}" stroke-width="{PX}" '
@@ -256,6 +308,7 @@ def build(out, act="nap", palette="bit", scheme="forest"):
 .ants{{animation:ants .5s steps(2) infinite}}
 @keyframes ants{{to{{stroke-dashoffset:{2 * PX}}}}}
 {chr(10).join(cats.common_css(T, kit) + cat_css)}
+{chr(10).join(fx_css)}
 {cats.REDUCED}
 </style>
 <defs>{"".join(defs)}</defs>
