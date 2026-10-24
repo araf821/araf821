@@ -47,12 +47,6 @@ SKINS = {
     "cursor": {"s": 1, "w": 10, "poses": {"arrow": ([CURSOR], 0)}},
     "tail": {"s": 3, "w": 7, "poses": {"flick": (px_.TAIL, 1.4)}},
 }
-# Smooth every sprite with two Scale2x passes: same size on screen, four times the resolution
-for _skin in SKINS.values():
-    _skin["poses"] = {n: ([px_.scale2x(px_.scale2x(f)) for f in frames], cyc)
-                      for n, (frames, cyc) in _skin["poses"].items()}
-    _skin["s"], _skin["w"] = _skin["s"] / 4, _skin["w"] * 4
-
 HOP_UP, HOP_DOWN = "cubic-bezier(.2,.7,.4,1)", "cubic-bezier(.6,0,.8,.4)"
 
 

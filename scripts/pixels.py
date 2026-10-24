@@ -166,18 +166,3 @@ def cloud(phase):
 STAR = ["..#..", "#.#.#", ".###.", "#.#.#", "..#.."]
 TAIL = [["..###..", ".#qsq#.", "#q#.#s#", "##..#q#", "....#s#", "....#q#", "...#sq#", "...###."],
         [".###...", "#qsq#..", "#s#.#q#", "#q#..##", "#s#....", "#q#....", "#qs#...", ".###..."]]
-
-
-def scale2x(rows_):
-    """EPX/Scale2x: doubles a sprite and rounds its staircase edges."""
-    h, w = len(rows_), len(rows_[0])
-    at = lambda x, y: rows_[y][x] if 0 <= x < w and 0 <= y < h else "."
-    out = [[""] * (w * 2) for _ in range(h * 2)]
-    for y in range(h):
-        for x in range(w):
-            p, a, b, c, d = at(x, y), at(x, y - 1), at(x + 1, y), at(x - 1, y), at(x, y + 1)
-            out[2 * y][2 * x] = a if c == a and c != d and a != b else p
-            out[2 * y][2 * x + 1] = b if a == b and a != c and b != d else p
-            out[2 * y + 1][2 * x] = c if d == c and d != b and c != a else p
-            out[2 * y + 1][2 * x + 1] = d if b == d and b != a and d != c else p
-    return ["".join(r) for r in out]
