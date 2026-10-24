@@ -183,7 +183,7 @@ def build(out, act="nap", palette="bit", scheme="forest"):
                 f'<path d="{rect(x + w // 2 - lw // 2, y + len(bitmap) + 3, lw, 9)}" fill="{t["paper"]}"/>'
                 f'<path d="{text(label, x + w // 2, y + len(bitmap) + 4, 1, "middle")}" fill="{t["ink"]}"/></g>')
 
-    body.append(icon(DISK, 434, 22, "HARD DISK"))
+    body.append(icon(DISK, 434, 22, "SOFT DISK"))
     body.append(icon(TRASH, 439, 294, "TRASH"))
 
     # Window 1: the record (inactive, behind)
@@ -192,24 +192,20 @@ def build(out, act="nap", palette="bit", scheme="forest"):
     body.append(f'<path d="{text(format(rec["length"], ","), wx + 14, wy + 24, 6)}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{text("DAY STREAK", wx + 15, wy + 76, 2)}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{text(fmt_date(rec["start"]) + " - " + fmt_date(rec["end"]), wx + 15, wy + 98)}" fill="{t["ink"]}"/>')
-    # The record as a contribution grid: one 2px cell per day, and every one of them is set
+    # The streak split by calendar year: one block per year, sized by its days, labelled underneath
     start = dt.date.fromisoformat(rec["start"])
     end = dt.date.fromisoformat(rec["end"])
-    gx, gy = wx + 15, wy + 114
-    origin = start - dt.timedelta(days=start.weekday())
-    cells, d = [], start
-    while d <= end:
-        if days.get(d.isoformat(), 0):
-            cells.append(rect(gx + (d - origin).days // 7 * 2, gy + d.weekday() * 2, 2, 2))
-        d += dt.timedelta(days=1)
-    body.append(f'<path d="{"".join(cells)}" fill="{t["bar"] if palette == "colour" else t["ink"]}"/>')
-    weeks = (end - origin).days // 7 + 1
-    ticks = []
-    for year in range(start.year + 1, end.year + 1):
-        tx = gx + (dt.date(year, 1, 1) - origin).days // 7 * 2
-        ticks.append(rect(tx, gy + 15, 1, 3))
-        body.append(f'<path d="{text(str(year), tx + 3, gy + 17)}" fill="{t["ink"]}"/>')
-    body.append(f'<path d="{"".join(ticks)}" fill="{t["ink"]}"/>')
+    gx, gy, gw = wx + 15, wy + 110, 160
+    years = [(y, (min(end, dt.date(y, 12, 31)) - max(start, dt.date(y, 1, 1))).days + 1)
+             for y in range(start.year, end.year + 1)]
+    x = gx
+    blocks = []
+    for y, n in years:
+        w = round((gw - 3 * (len(years) - 1)) * n / rec["length"])
+        blocks.append(rect(x, gy, w, 7))
+        body.append(f'<path d="{text(str(y), x + w // 2, gy + 11, 1, "middle")}" fill="{t["ink"]}"/>')
+        x += w + 3
+    body.append(f'<path d="{"".join(blocks)}" fill="{t["bar"] if palette == "colour" else t["ink"]}"/>')
 
     # Window 2: the last year (active, in front), monthly totals as one-bit bars
     rx, ry, rw, rh = 196, 140, 236, 122
