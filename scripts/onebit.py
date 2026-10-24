@@ -12,13 +12,13 @@ SW, SH = 480, 342
 # The colour build ignores the viewer's theme and wears one fixed desk
 SCHEMES = {
     "forest": {"paper": "#070c09", "ink": "#ece6d6", "desk_a": "#08150f", "desk_b": "#0e2117",
-               "bar": "#9cc78f", "now": "#ff9d4a", "gray": "#5f6672"},
+               "bar": "#9cc78f", "now": "#ff9d4a", "gray": "#5f6672", "catline": "#0a0a0a", "eye": "#f2efe8"},
     "beige": {"paper": "#fbf6ea", "ink": "#211c16", "desk_a": "#c9b994", "desk_b": "#dacdae",
-              "bar": "#6f8f5e", "now": "#e5822f", "gray": "#4f5562", "eye": "#fbf6ea"},
+              "bar": "#6f8f5e", "now": "#e5822f", "gray": "#4f5562", "eye": "#fbf6ea", "catline": "#0a0a0a"},
 }
 THEMES = {
-    "dark": {"ink": "#eceae3", "paper": "#0d0e16", "gray": "#5a606c", "eye": "#f2efe8", "chest": "#fbf3e6", "nose": "#f0a3a6", "amber": "#f2c53d", "green": "#c4cf5a", "desk_a": "#15173a", "desk_b": "#22255a", "bar": "#8b90ff", "now": "#ff9d4a", "orange": "#ec8a3c", "stripe": "#b5601e"},
-    "light": {"ink": "#0a0a0a", "paper": "#ffffff", "gray": "#4f5562", "eye": "#ffffff", "chest": "#fdf6ea", "nose": "#e8939a", "amber": "#f0c030", "green": "#b8c64e", "desk_a": "#3c8c93", "desk_b": "#64b3b7", "bar": "#2c7a82", "now": "#e5822f", "orange": "#e8873a", "stripe": "#ad5a1a"},
+    "dark": {"ink": "#eceae3", "paper": "#0d0e16", "gray": "#5a606c", "eye": "#f2efe8", "chest": "#fbf3e6", "nose": "#f0a3a6", "amber": "#f2c53d", "green": "#c4cf5a", "catline": "#0a0a0a", "desk_a": "#15173a", "desk_b": "#22255a", "bar": "#8b90ff", "now": "#ff9d4a", "orange": "#ec8a3c", "stripe": "#b5601e"},
+    "light": {"ink": "#0a0a0a", "paper": "#ffffff", "gray": "#4f5562", "eye": "#ffffff", "chest": "#fdf6ea", "nose": "#e8939a", "amber": "#f0c030", "green": "#b8c64e", "catline": "#0a0a0a", "desk_a": "#3c8c93", "desk_b": "#64b3b7", "bar": "#2c7a82", "now": "#e5822f", "orange": "#e8873a", "stripe": "#ad5a1a"},
 }
 
 FONT = {

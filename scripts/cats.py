@@ -56,7 +56,7 @@ def fills(k, palette, eye="amber"):
     base = {"#": t["ink"], "o": t["paper"], "w": t["paper"], "c": t["paper"]}
     if palette == "colour":
         return {**base, "g": t["gray"], "w": t["eye"], "q": t["orange"], "s": t["stripe"], "c": t["chest"],
-                "n": t["nose"], "e": t[eye]}
+                "n": t["nose"], "e": t[eye], **({"#": t["catline"]} if eye in ("amber", "green") else {})}
     return {**base, "g": "url(#dither)", "q": t["paper"], "s": t["ink"], "n": t["ink"], "e": t["paper"]}
 
 
