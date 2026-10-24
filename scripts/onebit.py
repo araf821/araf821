@@ -10,7 +10,7 @@ from common import fmt_date, last_year, load_days, streaks, themed, tokens
 PX = 2.5                       # one screen pixel in viewBox units: a 480 x 342 screen
 SW, SH = 480, 342
 THEMES = {
-    "dark": {"ink": "#f2efe8", "paper": "#0a0a0a", "gray": "#5a606c", "eye": "#f2efe8", "chest": "#fbf3e6", "nose": "#f0a3a6", "amber": "#f2c53d", "green": "#c4cf5a", "desk_a": "#123f45", "desk_b": "#1d5a61", "bar": "#5cc0c6", "now": "#ec8a3c", "orange": "#ec8a3c", "stripe": "#b5601e"},
+    "dark": {"ink": "#eceae3", "paper": "#0d0e16", "gray": "#5a606c", "eye": "#f2efe8", "chest": "#fbf3e6", "nose": "#f0a3a6", "amber": "#f2c53d", "green": "#c4cf5a", "desk_a": "#15173a", "desk_b": "#22255a", "bar": "#8b90ff", "now": "#ff9d4a", "orange": "#ec8a3c", "stripe": "#b5601e"},
     "light": {"ink": "#0a0a0a", "paper": "#ffffff", "gray": "#4f5562", "eye": "#ffffff", "chest": "#fdf6ea", "nose": "#e8939a", "amber": "#f0c030", "green": "#b8c64e", "desk_a": "#3c8c93", "desk_b": "#64b3b7", "bar": "#2c7a82", "now": "#e5822f", "orange": "#e8873a", "stripe": "#ad5a1a"},
 }
 
@@ -257,7 +257,7 @@ def build(out, act="nap", palette="bit"):
 {"".join(body)}
 {corners}
 </svg>"""
-    css, svg = themed(svg, THEMES)
+    css, svg = themed(svg, {"dark": THEMES["dark"], "light": THEMES["dark"]} if palette == "colour" else THEMES)
     svg = svg.replace("<style>", "<style>" + css, 1)
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(svg)
