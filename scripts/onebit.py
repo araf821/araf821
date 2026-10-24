@@ -11,7 +11,7 @@ PX = 2.5                       # one screen pixel in viewBox units: a 480 x 342 
 SW, SH = 480, 342
 # The colour build ignores the viewer's theme and wears one fixed desk
 SCHEMES = {
-    "forest": {"paper": "#070c09", "ink": "#ece6d6", "desk_a": "#08150f", "desk_b": "#0e2117",
+    "forest": {"paper": "#070c09", "ink": "#ece6d6", "desk_a": "#1c3b2a", "desk_b": "#07120c",
                "bar": "#9cc78f", "now": "#ff9d4a", "gray": "#5f6672", "catline": "#0a0a0a", "eye": "#f2efe8"},
     "beige": {"paper": "#fbf6ea", "ink": "#211c16", "desk_a": "#c9b994", "desk_b": "#dacdae",
               "bar": "#6f8f5e", "now": "#e5822f", "gray": "#4f5562", "eye": "#fbf6ea", "catline": "#0a0a0a"},
@@ -161,8 +161,10 @@ def build(out, act="nap", palette="bit", scheme="forest"):
     body.append(f'<rect width="{SW * PX}" height="{SH * PX}" fill="{t["paper"]}"/>'
                 f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="url(#dither)"/>')
     if palette == "colour":
-        defs.append(f'<pattern id="desk" width="{2 * PX}" height="{2 * PX}" patternUnits="userSpaceOnUse">'
-                    f'<path d="{rect(0, 0, 1, 1)}{rect(1, 1, 1, 1)}" fill="{t["desk_a"]}"/></pattern>')
+        # A classic 8x8 desktop pattern: scattered tweed dots over the base green
+        tweed = [(0, 0), (3, 1), (6, 2), (1, 3), (4, 4), (7, 5), (2, 6), (5, 7)]
+        defs.append(f'<pattern id="desk" width="{8 * PX}" height="{8 * PX}" patternUnits="userSpaceOnUse">'
+                    f'<path d="{"".join(rect(x, y, 1, 1) for x, y in tweed)}" fill="{t["desk_a"]}"/></pattern>')
         body.append(f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="{t["desk_b"]}"/>'
                     f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="url(#desk)"/>')
     body.append(f'<path d="{rect(0, 12, SW, 1)}" fill="{t["ink"]}"/>')
