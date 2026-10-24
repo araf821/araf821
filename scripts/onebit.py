@@ -166,7 +166,7 @@ def build(out, act="nap", palette="bit", scheme="forest"):
         body.append(f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="{t["desk_b"]}"/>'
                     f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="url(#desk)"/>')
     body.append(f'<path d="{rect(0, 12, SW, 1)}" fill="{t["ink"]}"/>')
-    menu = [("ARAF", 20), ("FILE", 52), ("EDIT", 80), ("VIEW", 108), ("SPECIAL", 136)]
+    menu = [("FILE", 22), ("EDIT", 50), ("VIEW", 78), ("SPECIAL", 106)]
     paw = ["..#.#..", ".#...#.", "...#...", "..###..", ".#####.", ".#####."]
     body.append(f'<path d="{runs(paw, 9, 3)}" fill="{t["now"] if palette == "colour" else t["ink"]}"/>')
     body.append(f'<path d="{text(today.strftime("%a %d %b").upper(), SW - 12, 3, 1, "end")}" fill="{t["ink"]}"/>')
@@ -181,7 +181,7 @@ def build(out, act="nap", palette="bit", scheme="forest"):
                 f'<path d="{rect(x + w // 2 - lw // 2, y + len(bitmap) + 3, lw, 9)}" fill="{t["paper"]}"/>'
                 f'<path d="{text(label, x + w // 2, y + len(bitmap) + 4, 1, "middle")}" fill="{t["ink"]}"/></g>')
 
-    body.append(icon(DISK, 434, 22, "ARAF HD"))
+    body.append(icon(DISK, 434, 22, "HARD DISK"))
     body.append(icon(TRASH, 439, 294, "TRASH"))
 
     # Window 1: the record (inactive, behind)
