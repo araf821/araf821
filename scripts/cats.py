@@ -25,17 +25,22 @@ _SIT_S = [(6, 4), (8, 4), (10, 4), (4, 11), (7, 11), (10, 11), (5, 12), (8, 12),
 _WALK_S = [(13, 2), (5, 5), (8, 5), (11, 5), (4, 6), (7, 6), (10, 6), (5, 7), (8, 7), (11, 7)]
 _SLEEP_S = [(2, 2), (8, 2), (10, 2), (12, 2), (7, 3), (10, 3), (13, 3), (6, 5), (9, 5), (12, 5)]
 
+# Face and chest from the photo: green eyes, pink nose, white muzzle and chest
+_SIT_X = [("e", [(4, 5), (11, 5)]), ("n", [(7, 7), (8, 7)]), ("c", [(6, 8), (7, 8), (8, 8), (9, 8), (6, 9), (7, 9),
+          (8, 9), (9, 9), (6, 10), (7, 10), (8, 10), (9, 10), (7, 11), (8, 11)])]
+_WALK_X = [("e", [(13, 3)]), ("c", [(12, 4), (13, 4), (14, 4)])]
+
 # A skin: pose -> (frames, seconds per frame cycle), plus sprite scale and width in sprite pixels
 SKINS = {
     "desk": {"s": 3, "w": 16, "poses": {
         "walk": ([CAT_WALK_A, CAT_WALK_B], .3), "sit": ([CAT_SIT], 0), "paw": ([CAT_PAW], 0),
         "sleep": ([CAT_SLEEP_A, CAT_SLEEP_B], 3.2)}},
-    "orange": {"s": 3, "w": 16, "poses": {
-        "walk": ([px_.tabby(CAT_WALK_A, _WALK_S), px_.tabby(CAT_WALK_B, _WALK_S)], .3),
+    "orange": {"s": 3, "w": 16, "eye": "green", "poses": {
+        "walk": ([px_.tabby(CAT_WALK_A, _WALK_S, _WALK_X), px_.tabby(CAT_WALK_B, _WALK_S, _WALK_X)], .3),
         "run": ([px_.tabby(CAT_WALK_A, _WALK_S), px_.tabby(CAT_WALK_B, _WALK_S)], .12),
-        "sit": ([px_.tabby(CAT_SIT, _SIT_S)], 0), "paw": ([px_.tabby(CAT_PAW, _SIT_S)], 0),
+        "sit": ([px_.tabby(CAT_SIT, _SIT_S, _SIT_X)], 0), "paw": ([px_.tabby(CAT_PAW, _SIT_S, _SIT_X)], 0),
         "sleep": ([px_.tabby(CAT_SLEEP_A, _SLEEP_S), px_.tabby(CAT_SLEEP_B, _SLEEP_S)], 3.2)}},
-    "gray": {"s": 3, "w": 24, "poses": {
+    "gray": {"s": 3, "w": 24, "eye": "amber", "poses": {
         "walk": ([px_.fat_walk(0), px_.fat_walk(1)], .5), "sit": ([px_.fat_sit()], 0),
         "paw": ([px_.fat_sit(True)], 0), "sleep": ([px_.fat_sleep(0), px_.fat_sleep(1)], 3.6)}},
     "cloud": {"s": 3, "w": 32, "poses": {"fight": ([px_.cloud(0), px_.cloud(2.1), px_.cloud(4.2)], .42)}},
@@ -45,13 +50,14 @@ SKINS = {
 HOP_UP, HOP_DOWN = "cubic-bezier(.2,.7,.4,1)", "cubic-bezier(.6,0,.8,.4)"
 
 
-def fills(k, palette):
+def fills(k, palette, eye="amber"):
     """Fill per sprite code. One-bit: gray is a dither, orange is white fur with ink tabby stripes."""
     t = k["t"]
-    base = {"#": t["ink"], "o": t["paper"], "w": t["paper"]}
+    base = {"#": t["ink"], "o": t["paper"], "w": t["paper"], "c": t["paper"]}
     if palette == "colour":
-        return {**base, "g": t["gray"], "w": t["eye"], "q": t["orange"], "s": t["stripe"]}
-    return {**base, "g": "url(#dither)", "q": t["paper"], "s": t["ink"]}
+        return {**base, "g": t["gray"], "w": t["eye"], "q": t["orange"], "s": t["stripe"], "c": t["chest"],
+                "n": t["nose"], "e": t[eye]}
+    return {**base, "g": "url(#dither)", "q": t["paper"], "s": t["ink"], "n": t["ink"], "e": t["paper"]}
 
 
 def pix(rows, fill, s, PX, anchor="feet"):
@@ -69,7 +75,7 @@ def pix(rows, fill, s, PX, anchor="feet"):
                 paths.setdefault(c, []).append(
                     f"M{i * s * PX:g},{(top + j * s) * PX:g}h{(k - i) * s * PX:g}v{s * PX:g}h-{(k - i) * s * PX:g}z")
             i = k
-    order = [c for c in ("o", "w", "q", "g", "s", "#") if c in paths]
+    order = [c for c in ("o", "w", "c", "q", "g", "s", "e", "n", "#") if c in paths]
     return "".join(f'<path d="{"".join(paths[c])}" fill="{fill[c]}"/>' for c in order)
 
 
@@ -79,7 +85,7 @@ class Act:
     def __init__(self, name, kit, skin="desk", palette="bit", anchor="feet"):
         self.name, self.k, self.skin = name, kit, SKINS[skin]
         self.s, self.w = self.skin["s"], self.skin["w"]
-        self.fill, self.anchor = fills(kit, palette), anchor
+        self.fill, self.anchor = fills(kit, palette, self.skin.get("eye", "amber")), anchor
         self.keys, self.poses = [], []
 
     def at(self, t, x, y, flip=False, ease="linear"):

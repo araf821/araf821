@@ -10,8 +10,8 @@ from common import fmt_date, last_year, load_days, streaks, themed, tokens
 PX = 2.5                       # one screen pixel in viewBox units: a 480 x 342 screen
 SW, SH = 480, 342
 THEMES = {
-    "dark": {"ink": "#f2efe8", "paper": "#0a0a0a", "gray": "#55555a", "eye": "#f2efe8", "orange": "#ff9a3d", "stripe": "#b85a12"},
-    "light": {"ink": "#0a0a0a", "paper": "#ffffff", "gray": "#45454a", "eye": "#ffffff", "orange": "#f7943a", "stripe": "#b5560f"},
+    "dark": {"ink": "#f2efe8", "paper": "#0a0a0a", "gray": "#5a606c", "eye": "#f2efe8", "chest": "#fbf3e6", "nose": "#f0a3a6", "amber": "#f2c53d", "green": "#c4cf5a", "desk_a": "#123f45", "desk_b": "#1d5a61", "bar": "#5cc0c6", "now": "#ec8a3c", "orange": "#ec8a3c", "stripe": "#b5601e"},
+    "light": {"ink": "#0a0a0a", "paper": "#ffffff", "gray": "#4f5562", "eye": "#ffffff", "chest": "#fdf6ea", "nose": "#e8939a", "amber": "#f0c030", "green": "#b8c64e", "desk_a": "#3c8c93", "desk_b": "#64b3b7", "bar": "#2c7a82", "now": "#e5822f", "orange": "#e8873a", "stripe": "#ad5a1a"},
 }
 
 FONT = {
@@ -153,8 +153,16 @@ def build(out, act="nap", palette="bit"):
                 f'<path d="{rect(0, 0, 1, 1)}" fill="{t["ink"]}"/></pattern>')
     body.append(f'<rect width="{SW * PX}" height="{SH * PX}" fill="{t["paper"]}"/>'
                 f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="url(#dither)"/>')
+    if palette == "colour":
+        defs.append(f'<pattern id="desk" width="{2 * PX}" height="{2 * PX}" patternUnits="userSpaceOnUse">'
+                    f'<path d="{rect(0, 0, 1, 1)}{rect(1, 1, 1, 1)}" fill="{t["desk_a"]}"/></pattern>')
+        body.append(f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="{t["desk_b"]}"/>'
+                    f'<rect y="{13 * PX}" width="{SW * PX}" height="{(SH - 13) * PX}" fill="url(#desk)"/>')
     body.append(f'<path d="{rect(0, 12, SW, 1)}" fill="{t["ink"]}"/>')
-    menu = [("ARAF", 12), ("FILE", 44), ("EDIT", 72), ("VIEW", 100), ("SPECIAL", 128)]
+    menu = [("ARAF", 20), ("FILE", 52), ("EDIT", 80), ("VIEW", 108), ("SPECIAL", 136)]
+    paw = ["..#.#..", ".#...#.", "...#...", "..###..", ".#####.", ".#####."]
+    body.append(f'<path d="{runs(paw, 9, 3)}" fill="{t["now"] if palette == "colour" else t["ink"]}"/>')
+    body.append(f'<path d="{text(today.strftime("%a %d %b").upper(), SW - 12, 3, 1, "end")}" fill="{t["ink"]}"/>')
     body.append(f'<path d="{"".join(text(m, x, 3) for m, x in menu)}" fill="{t["ink"]}"/>')
 
     # Desktop icons
@@ -185,7 +193,7 @@ def build(out, act="nap", palette="bit"):
         if days.get(d.isoformat(), 0):
             cells.append(rect(gx + (d - origin).days // 7 * 2, gy + d.weekday() * 2, 2, 2))
         d += dt.timedelta(days=1)
-    body.append(f'<path d="{"".join(cells)}" fill="{t["ink"]}"/>')
+    body.append(f'<path d="{"".join(cells)}" fill="{t["bar"] if palette == "colour" else t["ink"]}"/>')
     weeks = (end - origin).days // 7 + 1
     ticks = []
     for year in range(start.year + 1, end.year + 1):
@@ -211,7 +219,9 @@ def build(out, act="nap", palette="bit"):
     for i, total in enumerate(months):
         h = max(1, round(bh * total / peak))
         bars.append(rect(bx0 + i * (bw + 3), by0 - h, bw, h))
-    body.append(f'<path d="{"".join(bars)}" fill="url(#dither)"/>'
+    bar_fill = t["bar"] if palette == "colour" else "url(#dither)"
+    body.append(f'<path d="{"".join(bars[:-1])}" fill="{bar_fill}"/>'
+                f'<path d="{bars[-1]}" fill="{t["now"] if palette == "colour" else bar_fill}"/>'
                 f'<path d="{rect(bx0, by0, len(months) * (bw + 3) - 3, 1)}" fill="{t["ink"]}"/>')
     lh = max(1, round(bh * months[-1] / peak))
     body.append(f'<rect class="ants" x="{(bx0 + (len(months) - 1) * (bw + 3) - 1) * PX}" y="{(by0 - lh - 1) * PX}" '

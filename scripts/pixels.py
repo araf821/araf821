@@ -83,8 +83,9 @@ def fat_sit(paw=False):
     tri(head, (18.0, 0), (18.4, 4.8), (14.0, 2.4), "g")
     outline(head)
     g = overlay(body, head)
-    put(g, [(8, 6), (14, 6)], "w")
-    put(g, [(9, 6), (13, 6), (11, 8)], "#")
+    put(g, [(8, 5), (9, 5), (13, 5), (14, 5), (8, 6), (14, 6)], "e")
+    put(g, [(9, 6), (13, 6)], "#")
+    put(g, [(11, 8)], "n")
     return rows(g)
 
 
@@ -102,8 +103,9 @@ def fat_walk(frame):
     tri(head, (22.8, 0), (19.6, 1.8), (23.4, 3.6), "g")
     outline(head)
     g = overlay(body, head)
-    put(g, [(19, 4)], "w")
-    put(g, [(20, 4), (22, 6)], "#")
+    put(g, [(19, 4)], "e")
+    put(g, [(20, 4)], "#")
+    put(g, [(22, 6)], "n")
     return rows(g)
 
 
@@ -123,8 +125,11 @@ def fat_sleep(frame):
 
 
 # --- the orange tabby ('q' fur, 's' stripes), from the original desk cat --------------------
-def tabby(rows_, cells):
-    return stripes([r.replace("o", "q") for r in rows_], cells)
+def tabby(rows_, cells, extra=()):
+    g = stripes([r.replace("o", "q") for r in rows_], cells)
+    for code, pts in extra:
+        g = stripes(g, pts, code)
+    return g
 
 
 # --- the fight: a wobbling dust cloud with gray and orange limbs poking out ------------------
