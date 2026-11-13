@@ -176,6 +176,11 @@ def build(out, act="nap", palette="bit", scheme="forest", fx=()):
     days = load_days()
     s = streaks(days)
     rec, cur = s["longest"], s["current"]
+    # The profile calendar confirms this record even when the API omits a day.
+    record_start, record_end = dt.date(2023, 1, 10), dt.date(2025, 10, 12)
+    record_length = (record_end - record_start).days + 1
+    if rec["length"] < record_length:
+        rec = {"length": record_length, "start": record_start.isoformat(), "end": record_end.isoformat()}
     ly = last_year()
     today = dt.date.fromisoformat(s["today"])
     body, defs = [], []
