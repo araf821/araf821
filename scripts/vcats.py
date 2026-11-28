@@ -63,14 +63,43 @@ def _fringe(color, a, b, d, n=4):
                    f'l{d[0]:.1f},{d[1]:.1f}" stroke="{color}" stroke-width="1.1" stroke-linecap="round"/>' for i in range(n))
 
 
-def _side_scarf(color, k, flowing):
-    band = _knit(color, "M16,-45 C20,-47.5 27.5,-44 31.5,-38 L28.6,-34.2 C25,-39.5 20,-41.8 14.6,-40.4 Z")
+def _paint(scarf, k):
+    """A scarf is one colour, or (base, stripe) for a striped knit. Returns (defs, fill, base colour)."""
+    if isinstance(scarf, str):
+        return "", scarf, scarf
+    base, stripe = scarf
+    pat = (f'<pattern id="{k}knit" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">'
+           f'<rect width="5" height="5" fill="{base}"/><rect width="2.4" height="5" fill="{stripe}"/></pattern>')
+    return f"<defs>{pat}</defs>", f"url(#{k}knit)", base
+
+
+def _side_scarf(scarf, k, flowing):
+    defs, paint, base = _paint(scarf, k)
+    band = _knit(paint, "M16,-45 C20,-47.5 27.5,-44 31.5,-38 L28.6,-34.2 C25,-39.5 20,-41.8 14.6,-40.4 Z")
     if flowing:
-        tail = _pivot(18, -42, _knit(color, "M0,0 C-6,-2.4 -12,-1 -19,-4.6 L-17.6,1 C-11,3 -5,3.4 0,4.6 Z")
-                      + _fringe(color, (-18.8, -3.8), (-17.8, .4), (-2.6, .4), 3), f"{k}scarf")
+        tail = _pivot(18, -42, _knit(paint, "M0,0 C-6,-2.4 -12,-1 -19,-4.6 L-17.6,1 C-11,3 -5,3.4 0,4.6 Z")
+                      + _fringe(base, (-18.8, -3.8), (-17.8, .4), (-2.6, .4), 3), f"{k}scarf")
     else:
-        tail = _pivot(20, -39.5, _knit(color, "M0,0 L4.6,.4 L3.6,12.6 L-.8,12 Z") + _fringe(color, (-.4, 12.2), (3.4, 12.6), (0, 2.6)))
-    return tail + band
+        tail = _pivot(20, -39.5, _knit(paint, "M0,0 L4.6,.4 L3.6,12.6 L-.8,12 Z") + _fringe(base, (-.4, 12.2), (3.4, 12.6), (0, 2.6)))
+    return defs + tail + band
+
+
+HAT_TRIM = "#f6f1ea"
+
+
+def _side_hat(color):
+    """A floppy knit hat on the side-view head, its tip trailing back to a pom-pom."""
+    return (f'<path d="M.6,-16.6 L17.4,-19.8 C14,-27.4 4,-33.6 -10.6,-33.4 C-4.6,-29.6 -1.4,-23.6 .6,-16.6 Z" fill="{color}"/>'
+            f'<path d="M-.4,-15 L18.4,-18.4 L17.4,-22.6 L-1.2,-19.4 Z" fill="{HAT_TRIM}" stroke="{HAT_TRIM}" stroke-width="2" stroke-linejoin="round"/>'
+            f'<circle cx="-10.8" cy="-33.4" r="3.6" fill="{HAT_TRIM}"/>')
+
+
+def _front_hat(color):
+    """The same hat seen from the front, leaning off to one side."""
+    return (f'<path d="M-11,-62 C-8.6,-74 2,-83 15.4,-81 C10.6,-77.6 8.6,-71 9.4,-62 Z" fill="{color}"/>'
+            f'<path d="M-2,-63 C1,-71 6,-77 12,-79.6" stroke="#000" stroke-opacity=".14" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+            f'<rect x="-13" y="-65" width="24.4" height="6.6" rx="3.3" fill="{HAT_TRIM}"/>'
+            f'<circle cx="15.8" cy="-81" r="4" fill="{HAT_TRIM}"/>')
 
 
 # ---- the ginger, side view ---------------------------------------------------------------------
@@ -88,7 +117,7 @@ def _side_body(k):
     return f'<defs>{clip}</defs><g fill="{FUR}">{shapes}</g>{marks}'
 
 
-def _side_head(k):
+def _side_head(k, hat=None):
     clip = f'<clipPath id="{k}h"><ellipse cx="9" cy="-8" rx="13" ry="12.5"/></clipPath>'
     return (f"<defs>{clip}</defs>"
             + _ear(((10, -17), (15.5, -31.5), (19.5, -14)), FAR)
@@ -107,15 +136,16 @@ def _side_head(k):
             + f'<ellipse cx="15.1" cy="-9" rx="1.5" ry="2.8" fill="{PUPIL}"/>'
             + '<circle cx="14" cy="-10.4" r=".8" fill="#fff"/>'
             + f'<g stroke="{WHITE}" stroke-width=".6" stroke-linecap="round" opacity=".75">'
-              '<path d="M21,-2.2 L32,-5"/><path d="M21,-.8 L32,.2"/><path d="M20.6,.4 L30,3"/></g>')
+              '<path d="M21,-2.2 L32,-5"/><path d="M21,-.8 L32,.2"/><path d="M20.6,.4 L30,3"/></g>'
+            + (_side_hat(hat) if hat else ""))
 
 
-def tabby_run(k="tr", period=.3, scarf=None):
+def tabby_run(k="tr", period=.3, scarf=None, hat=None):
     """Side view, mid-gallop: legs, body and tail on one stride loop."""
     far = _pivot(12, -24, _leg(FAR), f"{k}ff") + _pivot(-21, -23, _leg(FAR), f"{k}bf")
     near = _pivot(17, -24, _leg(FUR, rings=True), f"{k}fn") + _pivot(-15, -23, _leg(FUR, rings=True), f"{k}bn")
     tail = _pivot(-27, -35, _tail("M0,0 C-10,-2 -19,-8 -24,-18"), f"{k}t")
-    head = _pivot(26, -42, _side_head(k))
+    head = _pivot(26, -42, _side_head(k, hat))
     wrap = _side_scarf(scarf, k, True) if scarf else ""
     svg = f'<g class="{k}bob">{far}{tail}{_side_body(k)}{near}{wrap}{head}</g>'
     p = period
@@ -134,12 +164,12 @@ def tabby_run(k="tr", period=.3, scarf=None):
     return svg, css
 
 
-def tabby_stand(k="ts", look_at=None, look_back=.18, scarf=None):
+def tabby_stand(k="ts", look_at=None, look_back=.18, scarf=None, hat=None):
     """Side view standing; at `look_at` seconds the head turns back over the shoulder."""
     far = _pivot(12, -24, _leg(FAR)) + _pivot(-20, -23, _leg(FAR))
     near = _pivot(18, -24, _leg(FUR, rings=True)) + _pivot(-14, -23, _leg(FUR, rings=True))
     tail = _pivot(-27, -35, _tail("M0,0 C-8,-6 -10,-20 -4,-30 C-1,-34 3,-34 4,-31"))
-    head = _pivot(26, -42, _side_head(k), f"{k}head")
+    head = _pivot(26, -42, _side_head(k, hat), f"{k}head")
     wrap = _side_scarf(scarf, k, False) if scarf else ""
     svg = f"{far}{tail}{_side_body(k)}{near}{wrap}{head}"
     css = []
@@ -150,7 +180,7 @@ def tabby_stand(k="ts", look_at=None, look_back=.18, scarf=None):
 
 
 # ---- the ginger, sitting and facing us -----------------------------------------------------------
-def tabby_front(k="tf", blink_every=4.2, delay=0, scarf=None):
+def tabby_front(k="tf", blink_every=4.2, delay=0, scarf=None, hat=None):
     """Facing us, sitting, tail up its side; blinks now and then."""
     body_d = "M-14.5,-40 C-21.5,-28 -23.5,-8 -18,-2 Q0,3 18,-2 C23.5,-8 21.5,-28 14.5,-40 Z"
     clip = (f'<clipPath id="{k}b"><path d="{body_d}"/></clipPath>'
@@ -210,9 +240,11 @@ def tabby_front(k="tf", blink_every=4.2, delay=0, scarf=None):
               '<path d="M7,-44.4 L21,-47"/><path d="M7,-43 L21,-42.6"/><path d="M7,-41.8 L19.5,-38.6"/></g>')
     wrap = ""
     if scarf:
-        wrap = (_knit(scarf, "M6,-33 L11.6,-34 L12.8,-19.4 L7,-18.6 Z") + _fringe(scarf, (7.4, -19), (12.4, -19.4), (0, 2.6))
-                + _knit(scarf, "M-15,-39.6 Q0,-32.6 15,-39.6 L15.4,-33.8 Q0,-26.6 -15.4,-33.8 Z"))
-    svg = f"<defs>{clip}</defs>{tail}{body}{base}{gap}{legs}{wrap}{head}"
+        defs, paint, colour = _paint(scarf, k)
+        wrap = (defs + _knit(paint, "M6,-33 L11.6,-34 L12.8,-19.4 L7,-18.6 Z") + _fringe(colour, (7.4, -19), (12.4, -19.4), (0, 2.6))
+                + _knit(paint, "M-15,-39.6 Q0,-32.6 15,-39.6 L15.4,-33.8 Q0,-26.6 -15.4,-33.8 Z"))
+    topper = _front_hat(hat) if hat else ""
+    svg = f"<defs>{clip}</defs>{tail}{body}{base}{gap}{legs}{wrap}{head}{topper}"
     T = blink_every
     css = [f".{k}eye{{animation:{k}blink {T}s {delay + 1.2:.2f}s infinite}}"
            f"@keyframes {k}blink{{0%,92%,100%{{transform:none}}95%{{transform:scale(1,.12)}}}}",

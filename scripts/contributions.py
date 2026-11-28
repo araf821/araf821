@@ -97,6 +97,40 @@ def litter(x0, x1, y, seed, n=14):
         f'{vcats.leaf(rnd.randrange(2), rnd.choice(LEAF_COLOURS), rnd.uniform(1.1, 1.5))}</g>' for _ in range(n))
 
 
+def lights(x0, x1, y, seed, colours):
+    """A string of lights swagged along a year's top edge, each bulb twinkling on its own beat."""
+    rnd = random.Random(seed)
+    count = max(3, round((x1 - x0) / 100))
+    swag, sag = (x1 - x0) / count, 9
+    wire, bulbs = [f"M{x0:.1f},{y}"], []
+    for i in range(count):
+        a = x0 + i * swag
+        wire.append(f"Q{a + swag / 2:.1f},{y + sag * 2} {a + swag:.1f},{y}")
+        for t in (.2, .4, .6, .8):
+            bx = a + swag * t
+            by = y + sag * 2 * 2 * t * (1 - t)
+            colour = colours[(i * 4 + int(t * 5)) % len(colours)]
+            dur, dl = rnd.uniform(1.4, 3.2), rnd.uniform(0, 3)
+            bulbs.append(f'<g class="bulb" style="animation-duration:{dur:.1f}s;animation-delay:-{dl:.1f}s">'
+                         f'<circle cx="{bx:.1f}" cy="{by + 5:.1f}" r="9.5" fill="{colour}" opacity=".24"/>'
+                         f'<ellipse cx="{bx:.1f}" cy="{by + 5.6:.1f}" rx="3.2" ry="4.4" fill="{colour}"/></g>'
+                         f'<rect x="{bx - 1.6:.1f}" y="{by:.1f}" width="3.6" height="2.6" rx=".7" fill="#2b3346"/>')
+    return f'<path d="{"".join(wire)}" fill="none" stroke="#2b3346" stroke-width="1.3"/>' + "".join(bulbs)
+
+
+def sparkles(h, n=16):
+    """Four-point glints scattered over the card, each fading in and out."""
+    rnd = random.Random(2412)
+    out, css = [], [".glint{transform-box:fill-box;transform-origin:50% 50%;animation:glint ease-in-out infinite}"
+                    "@keyframes glint{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:.9;transform:none}}"]
+    for _ in range(n):
+        x, y, r = rnd.uniform(20, W - 20), rnd.uniform(20, h - 20), rnd.uniform(3, 6)
+        out.append(f'<path class="glint" style="animation-duration:{rnd.uniform(2.4, 4.6):.1f}s;animation-delay:-{rnd.uniform(0, 4):.1f}s" '
+                   f'd="M{x:.0f},{y - r:.1f}Q{x:.0f},{y:.0f} {x + r:.1f},{y:.0f}Q{x:.0f},{y:.0f} {x:.0f},{y + r:.1f}'
+                   f'Q{x:.0f},{y:.0f} {x - r:.1f},{y:.0f}Q{x:.0f},{y:.0f} {x:.0f},{y - r:.1f}Z" fill="#fff4d6"/>')
+    return "".join(out), css
+
+
 def drift(x0, x1, y, seed):
     """A soft ridge of snow lying along the top edge of a year's grid."""
     rnd = random.Random(seed)
@@ -167,11 +201,14 @@ def plate(days, today, total, current, theme):
         right = f'<path d="{NUM.path(format(year_total, ","), x1, hb, 30, -0.01, "end")}" fill="{tone}"/>'
         body.append(f'<g class="fade" style="animation-delay:{front(i, x0 + 80):.2f}s">{left}</g>')
         body.append(f'<g class="fade" style="animation-delay:{t_stop + .2 if now else front(i, x1):.2f}s">{right}</g>')
-        if "snow" in theme["falling"]:
-            body.append(f'<path class="fade" style="animation-delay:{front(i, x0):.2f}s" d="{drift(x0, x1, gy - 5, yr)}" '
-                        'fill="#e9f3fd" opacity=".92"/>')
-        elif "leaves" in theme["falling"]:
-            body.append(f'<g class="fade" style="animation-delay:{front(i, x0):.2f}s">{litter(x0, x1, gy - 2, yr)}</g>')
+        ledge, shown = theme["ledge"], f'class="fade" style="animation-delay:{front(i, x0):.2f}s"'
+        if "snow" in ledge:
+            body.append(f'<path {shown} d="{drift(x0, x1, gy - 5, yr)}" fill="#e9f3fd" opacity=".92"/>')
+        if "leaves" in ledge:
+            body.append(f'<g {shown}>{litter(x0, x1, gy - 2, yr)}</g>')
+        if "lights" in ledge:
+            # strung between the year and its total so the wire never crosses the numbers
+            body.append(f'<g {shown}>{lights(x0 + NUM.width(str(yr), 30) + 28, x1 - NUM.width(format(year_total, ","), 30) - 28, gy - 19, yr, theme["bulbs"])}</g>')
     css.append(".dot{transform-box:fill-box;transform-origin:50% 50%;animation:dot .42s cubic-bezier(.2,.9,.3,1.35) both}"
                "@keyframes dot{from{opacity:0;transform:translate(-18px,4px) scale(.4)}}"
                ".dotpaw{transform-box:fill-box;transform-origin:50% 50%;animation:dotpaw .6s cubic-bezier(.2,.9,.3,1.6) both}"
@@ -202,9 +239,10 @@ def plate(days, today, total, current, theme):
     css.append(f".tab{{transform:translate({x_stop:.1f}px,{last_bottom:.1f}px) scale({S});animation:tab {T:.3f}s both}}"
                f"@keyframes tab{{0%{{transform:translate({xs}px,{oy0 + head + grid:.1f}px) scale({S})}}{frames}}}")
     scarf = theme["scarf"]
-    rsvg, rcss = vcats.tabby_run("tr", scarf=scarf)
-    ssvg, scss = vcats.tabby_stand("ts", look_at=t_look, look_back=.22, scarf=scarf)
-    fsvg, fcss = vcats.tabby_front("tf", delay=t_turn, scarf=scarf)
+    hat = theme["hat"]
+    rsvg, rcss = vcats.tabby_run("tr", scarf=scarf, hat=hat)
+    ssvg, scss = vcats.tabby_stand("ts", look_at=t_look, look_back=.22, scarf=scarf, hat=hat)
+    fsvg, fcss = vcats.tabby_front("tf", delay=t_turn, scarf=scarf, hat=hat)
     css += rcss + scss + fcss
     css.append(f".tab-run{{opacity:0;animation:tabrun {T:.3f}s steps(1,end) both}}"
                f"@keyframes tabrun{{0%{{opacity:1}}{pct(t_stop)}{{opacity:0}}}}"
@@ -225,7 +263,7 @@ def plate(days, today, total, current, theme):
     g_in = start(last) + .45
     g_x = x0 + 30 * p
     g_stop = g_in + (g_x - xs) / gv + .18
-    settle = "snow" if "snow" in theme["falling"] else "leaf" if "leaves" in theme["falling"] else None
+    settle = theme["settle"]
     gray_nap = vcats.gray_sleep("gs", settle=(settle, g_stop + 1.2) if settle else None)
     css += vcats.gray_run("gr")[1] + gray_nap[1]
     css.append(f".gry{{transform:translate({g_x:.1f}px,{g_edge:.1f}px) scale({G});animation:gry {T:.3f}s linear both}}"
@@ -249,12 +287,15 @@ def plate(days, today, total, current, theme):
                "@keyframes zz{0%{opacity:0;transform:translate(0,0)}20%{opacity:.9}80%{opacity:.9}"
                "100%{opacity:0;transform:translate(6px,-14px)}}")
     h = round(last_bottom + 70)
-    weather = {"snow": lambda: snowfall(h), "leaves": lambda: leaffall(h),
-               "flurries": lambda: snowfall(h, 14, (1.2, 1.6, 2))}
+    weather = {"snow": lambda: snowfall(h), "light snow": lambda: snowfall(h, 30, (1.2, 1.6, 2.2, 2.8)),
+               "flurries": lambda: snowfall(h, 14, (1.2, 1.6, 2)), "leaves": lambda: leaffall(h),
+               "sparkles": lambda: sparkles(h)}
     for kind in theme["falling"]:
         layer, wcss = weather[kind]()
         body.append(layer)
         css += wcss
+    if "lights" in theme["ledge"]:
+        css.append(".bulb{animation:twinkle ease-in-out infinite alternate}@keyframes twinkle{from{opacity:.45}to{opacity:1}}")
     return header(C, total, current) + "".join(body), css, h
 
 
