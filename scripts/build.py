@@ -5,5 +5,5 @@ from pathlib import Path
 os.environ.setdefault("REFRESH", "1")
 import contributions  # noqa: E402
 
-contributions.build(Path(__file__).resolve().parent.parent / "assets" / "contributions.svg")
-print("assets/contributions.svg")
+theme = contributions.build(Path(__file__).resolve().parent.parent / "assets" / "contributions.svg")
+print(f"assets/contributions.svg ({theme})")

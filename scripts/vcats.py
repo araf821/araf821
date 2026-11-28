@@ -51,6 +51,28 @@ def _tail(d, w=7.5):
             'stroke-dashoffset="-3" opacity=".85"/>')
 
 
+# ---- a knitted scarf for the cold months ------------------------------------------------------
+def _knit(color, d):
+    return (f'<path d="{d}" fill="{color}"/>'
+            f'<path d="{d}" fill="none" stroke="#000" stroke-opacity=".18" stroke-width=".7" stroke-dasharray=".8 1.6"/>')
+
+
+def _fringe(color, a, b, d, n=4):
+    """Short tassels along the edge a-b, each pointing along d."""
+    return "".join(f'<path d="M{a[0] + (b[0] - a[0]) * i / (n - 1):.1f},{a[1] + (b[1] - a[1]) * i / (n - 1):.1f} '
+                   f'l{d[0]:.1f},{d[1]:.1f}" stroke="{color}" stroke-width="1.1" stroke-linecap="round"/>' for i in range(n))
+
+
+def _side_scarf(color, k, flowing):
+    band = _knit(color, "M16,-45 C20,-47.5 27.5,-44 31.5,-38 L28.6,-34.2 C25,-39.5 20,-41.8 14.6,-40.4 Z")
+    if flowing:
+        tail = _pivot(18, -42, _knit(color, "M0,0 C-6,-2.4 -12,-1 -19,-4.6 L-17.6,1 C-11,3 -5,3.4 0,4.6 Z")
+                      + _fringe(color, (-18.8, -3.8), (-17.8, .4), (-2.6, .4), 3), f"{k}scarf")
+    else:
+        tail = _pivot(20, -39.5, _knit(color, "M0,0 L4.6,.4 L3.6,12.6 L-.8,12 Z") + _fringe(color, (-.4, 12.2), (3.4, 12.6), (0, 2.6)))
+    return tail + band
+
+
 # ---- the ginger, side view ---------------------------------------------------------------------
 def _side_body(k):
     shapes = ('<ellipse cx="0" cy="-30" rx="27" ry="13.5"/><circle cx="-17" cy="-29" r="13"/>'
@@ -88,13 +110,14 @@ def _side_head(k):
               '<path d="M21,-2.2 L32,-5"/><path d="M21,-.8 L32,.2"/><path d="M20.6,.4 L30,3"/></g>')
 
 
-def tabby_run(k="tr", period=.3):
+def tabby_run(k="tr", period=.3, scarf=None):
     """Side view, mid-gallop: legs, body and tail on one stride loop."""
     far = _pivot(12, -24, _leg(FAR), f"{k}ff") + _pivot(-21, -23, _leg(FAR), f"{k}bf")
     near = _pivot(17, -24, _leg(FUR, rings=True), f"{k}fn") + _pivot(-15, -23, _leg(FUR, rings=True), f"{k}bn")
     tail = _pivot(-27, -35, _tail("M0,0 C-10,-2 -19,-8 -24,-18"), f"{k}t")
     head = _pivot(26, -42, _side_head(k))
-    svg = f'<g class="{k}bob">{far}{tail}{_side_body(k)}{near}{head}</g>'
+    wrap = _side_scarf(scarf, k, True) if scarf else ""
+    svg = f'<g class="{k}bob">{far}{tail}{_side_body(k)}{near}{wrap}{head}</g>'
     p = period
     css = [
         f".{k}fn,.{k}ff,.{k}bn,.{k}bf,.{k}t,.{k}bob{{animation:{p}s linear infinite}}",
@@ -105,17 +128,20 @@ def tabby_run(k="tr", period=.3):
         f".{k}t{{animation-name:{k}tl}}@keyframes {k}tl{{0%,100%{{transform:rotate(-8deg)}}50%{{transform:rotate(10deg)}}}}",
         f".{k}bob{{animation-name:{k}bb}}@keyframes {k}bb{{0%,100%{{transform:translate(0,0) rotate(0)}}"
         f"25%{{transform:translate(0,-4px) rotate(-3deg)}}75%{{transform:translate(0,-2px) rotate(3deg)}}}}",
+        f".{k}scarf{{animation:{k}flap {p * 1.5:.2f}s ease-in-out infinite}}"
+        f"@keyframes {k}flap{{0%,100%{{transform:rotate(-6deg) scale(1,1)}}50%{{transform:rotate(7deg) scale(.94,1.12)}}}}",
     ]
     return svg, css
 
 
-def tabby_stand(k="ts", look_at=None, look_back=.18):
+def tabby_stand(k="ts", look_at=None, look_back=.18, scarf=None):
     """Side view standing; at `look_at` seconds the head turns back over the shoulder."""
     far = _pivot(12, -24, _leg(FAR)) + _pivot(-20, -23, _leg(FAR))
     near = _pivot(18, -24, _leg(FUR, rings=True)) + _pivot(-14, -23, _leg(FUR, rings=True))
     tail = _pivot(-27, -35, _tail("M0,0 C-8,-6 -10,-20 -4,-30 C-1,-34 3,-34 4,-31"))
     head = _pivot(26, -42, _side_head(k), f"{k}head")
-    svg = f"{far}{tail}{_side_body(k)}{near}{head}"
+    wrap = _side_scarf(scarf, k, False) if scarf else ""
+    svg = f"{far}{tail}{_side_body(k)}{near}{wrap}{head}"
     css = []
     if look_at is not None:
         css.append(f".{k}head{{animation:{k}look {look_back}s cubic-bezier(.3,0,.2,1) {look_at:.2f}s both}}"
@@ -124,7 +150,7 @@ def tabby_stand(k="ts", look_at=None, look_back=.18):
 
 
 # ---- the ginger, sitting and facing us -----------------------------------------------------------
-def tabby_front(k="tf", blink_every=4.2, delay=0):
+def tabby_front(k="tf", blink_every=4.2, delay=0, scarf=None):
     """Facing us, sitting, tail up its side; blinks now and then."""
     body_d = "M-14.5,-40 C-21.5,-28 -23.5,-8 -18,-2 Q0,3 18,-2 C23.5,-8 21.5,-28 14.5,-40 Z"
     clip = (f'<clipPath id="{k}b"><path d="{body_d}"/></clipPath>'
@@ -182,7 +208,11 @@ def tabby_front(k="tf", blink_every=4.2, delay=0):
             + f'<g stroke="{WHITE}" stroke-width=".6" stroke-linecap="round" opacity=".75">'
               '<path d="M-7,-44.4 L-21,-47"/><path d="M-7,-43 L-21,-42.6"/><path d="M-7,-41.8 L-19.5,-38.6"/>'
               '<path d="M7,-44.4 L21,-47"/><path d="M7,-43 L21,-42.6"/><path d="M7,-41.8 L19.5,-38.6"/></g>')
-    svg = f"<defs>{clip}</defs>{tail}{body}{base}{gap}{legs}{head}"
+    wrap = ""
+    if scarf:
+        wrap = (_knit(scarf, "M6,-33 L11.6,-34 L12.8,-19.4 L7,-18.6 Z") + _fringe(scarf, (7.4, -19), (12.4, -19.4), (0, 2.6))
+                + _knit(scarf, "M-15,-39.6 Q0,-32.6 15,-39.6 L15.4,-33.8 Q0,-26.6 -15.4,-33.8 Z"))
+    svg = f"<defs>{clip}</defs>{tail}{body}{base}{gap}{legs}{wrap}{head}"
     T = blink_every
     css = [f".{k}eye{{animation:{k}blink {T}s {delay + 1.2:.2f}s infinite}}"
            f"@keyframes {k}blink{{0%,92%,100%{{transform:none}}95%{{transform:scale(1,.12)}}}}",
@@ -242,7 +272,18 @@ def gray_run(k="gr", period=.36):
     return svg, css
 
 
-def gray_sleep(k="gs"):
+LEAF = ("M0,-6.5 C3.8,-4.2 4.2,1.2 0,6.5 C-4.2,1.2 -3.8,-4.2 0,-6.5 Z",
+        "M0,-7 L1.6,-3 L5,-4 L3.4,-.6 L6,1 L2,2 L1.2,5.5 L0,4 L-1.2,5.5 L-2,2 L-6,1 L-3.4,-.6 L-5,-4 L-1.6,-3 Z")
+
+
+def leaf(shape, fill, scale=1):
+    """A fallen leaf centred on the origin, stem down."""
+    return (f'<g transform="scale({scale:g})"><path d="{LEAF[shape]}" fill="{fill}"/>'
+            f'<path d="M0,-5 L0,7.5" stroke="#000" stroke-opacity=".28" stroke-width=".7" stroke-linecap="round"/></g>')
+
+
+def gray_sleep(k="gs", settle=None):
+    """`settle` is (kind, seconds): "snow" piles up on its back, "leaf" drifts down onto it."""
     """The chubby gray cat curled up asleep, head on the left, paws tucked, breathing."""
     clip = f'<clipPath id="{k}c"><ellipse cx="0" cy="-15.5" rx="30" ry="15.5"/></clipPath>'
     body = (f'<ellipse cx="0" cy="-15.5" rx="30" ry="15.5" fill="{GRAY}"/>'
@@ -252,6 +293,11 @@ def gray_sleep(k="gs"):
             f'<path d="M24,-5 C28,-14 22,-24 12,-26" stroke="{GRAY_DK}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".8"/>'
             f'<g stroke="{GRAY_DK}" stroke-width="1" stroke-linecap="round" fill="none" opacity=".3">'
             '<path d="M0,-30.5 q1.4,3 .6,6"/><path d="M7,-30 q1.4,3 .6,5.6"/></g></g>')
+    kind, at = settle or (None, 0)
+    if kind == "snow":
+        body += _pivot(4, -29.6, '<path d="M-11,0 C-7,-4.6 6,-5.4 12,0 C6,1.2 -4,1.2 -11,0 Z" fill="#eef6ff"/>', f"{k}settle")
+    elif kind == "leaf":
+        body += _pivot(8, -30.5, f'<g transform="rotate(68)">{leaf(1, "#a65a30", 1.1)}</g>', f"{k}settle")
     breathing = _pivot(6, 0, f'<g transform="translate(-6,0)">{body}</g>', f"{k}br")
     tail = (f'<path d="M33,-7 C36,0 22,3 6,2.4 C-2,2 -8,1 -12,-.6" fill="none" stroke="{GRAY_DK}" stroke-width="7.4" stroke-linecap="round"/>'
             f'<path d="M30,-1.6 C24,1.4 14,2.4 6,2.2" fill="none" stroke="{GRAY}" stroke-width="2" stroke-linecap="round" opacity=".55"/>')
@@ -277,4 +323,12 @@ def gray_sleep(k="gs"):
     svg = f"<defs>{clip}</defs>{breathing}{tail}{paws}{head}"
     css = [f".{k}br{{animation:{k}breathe 3.6s ease-in-out infinite}}"
            f"@keyframes {k}breathe{{0%,100%{{transform:none}}50%{{transform:scale(1.015,1.06)}}}}"]
+    if kind == "snow":
+        css.append(f".{k}settle{{animation:{k}settle 2.4s ease-out {at:.2f}s both}}"
+                   f"@keyframes {k}settle{{from{{transform:scale(.3,0);opacity:0}}}}")
+    elif kind == "leaf":
+        css.append(f".{k}settle{{animation:{k}settle 2.6s cubic-bezier(.3,.1,.3,1) {at:.2f}s both}}"
+                   f"@keyframes {k}settle{{0%{{opacity:0;transform:translate(14px,-70px) rotate(-160deg)}}"
+                   f"15%{{opacity:1}}45%{{transform:translate(-8px,-34px) rotate(40deg)}}"
+                   f"75%{{transform:translate(5px,-10px) rotate(-25deg)}}100%{{transform:none}}}}")
     return svg, css
