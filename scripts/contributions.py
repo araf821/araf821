@@ -1,5 +1,6 @@
 """The contributions plate: every year since 2023 as a paw grid, with the cats chasing through it."""
 import datetime as dt
+import math
 import random
 from pathlib import Path
 
@@ -165,8 +166,16 @@ def plate(days, today, total, current, theme):
     row_t = (xe - xs) / v
     start = lambda i: t0 + i * (row_t + pause)
     t_w = (today - first_sunday(today.year)).days // 7
-    x_stop = (x0 + (t_w + 1) * p + x1) / 2 + 6
-    t_stop = start(last) + (x_stop - xs) / v + .12
+    # late in December there's no room left after today, so the tabby hops up onto the year's top edge instead,
+    # just short of the year total
+    perch = x1 - (x0 + (t_w + 1) * p) < 3 * p
+    if perch:
+        this_year = sum(n for k, n in days.items() if k.startswith(str(today.year)))
+        x_stop = x1 - NUM.width(format(this_year, ","), 30, -0.01) - 116
+        t_stop = start(last) + (x_stop - 70 - xs) / v + .42
+    else:
+        x_stop = (x0 + (t_w + 1) * p + x1) / 2 + 6
+        t_stop = start(last) + (x_stop - xs) / v + .12
 
     def front(i, cx):
         t = start(i) + max(0, cx + lag - xs) / v
@@ -224,6 +233,7 @@ def plate(days, today, total, current, theme):
     t_look, t_turn = t_stop + .3, t_stop + 1.55
     T = t_turn + .5
     pct = lambda t: f"{t / T * 100:.3f}%"
+    rest = oy0 + last * bh + head - 3 if perch else last_bottom
     keys = []
     for i in range(len(yrs)):
         ground = oy0 + i * bh + head + grid
@@ -231,12 +241,17 @@ def plate(days, today, total, current, theme):
         if i < last:
             keys.append((start(i) + row_t, xe, ground, "linear"))
             keys.append((start(i) + row_t + .001, xs, ground + bh, "linear"))
+        elif perch:
+            t_hop = start(i) + (x_stop - 70 - xs) / v
+            keys.append((t_hop, x_stop - 70, ground, "linear"))
+            keys += [(t_hop + .42 * f, x_stop - 70 * (1 - f), ground + (rest - ground) * f - 46 * math.sin(math.pi * f), "linear")
+                     for f in (j / 8 for j in range(1, 9))]
         else:
             keys.append((start(i) + (x_stop - 70 - xs) / v, x_stop - 70, ground, "cubic-bezier(.2,.6,.35,1)"))
             keys.append((t_stop, x_stop, ground, "linear"))
     frames = "".join(f"{pct(t)}{{transform:translate({x:.1f}px,{y:.1f}px) scale({S});animation-timing-function:{e}}}"
                      for t, x, y, e in keys)
-    css.append(f".tab{{transform:translate({x_stop:.1f}px,{last_bottom:.1f}px) scale({S});animation:tab {T:.3f}s both}}"
+    css.append(f".tab{{transform:translate({x_stop:.1f}px,{rest:.1f}px) scale({S});animation:tab {T:.3f}s both}}"
                f"@keyframes tab{{0%{{transform:translate({xs}px,{oy0 + head + grid:.1f}px) scale({S})}}{frames}}}")
     scarf = theme["scarf"]
     hat = theme["hat"]
